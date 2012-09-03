@@ -46,5 +46,5 @@ setup(
         'pymongo>=1.9',
         'beaker>=1.5'
     ],
-    data_files=["", ['README.rst']]
+    data_files=[("", ['README.rst'])]
 )
