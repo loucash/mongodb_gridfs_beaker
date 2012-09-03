@@ -1,16 +1,16 @@
 mongodb_gridfs_beaker
 =====================
 
-MongoDB_ GridFS_ backend for Beaker_'s caching / session system.
+MongoDB_. GridFS_. backend for Beaker_.'s caching / session system.
 
-Based upon mongodb_beaker_.
+Based upon mongodbbeaker_.
 
 Really basic, first implementation of MongoDB GridFS as a backend storage for Beaker.
 
 .. _Beaker: http://beaker.groovie.org
 .. _MongoDB: http://mongodb.org
 .. _GridFS: http://www.mongodb.org/display/DOCS/GridFS
-.. _mongodb_beaker: http://pypi.python.org/pypi/mongodb_beaker
+.. _mongodbbeaker: http://pypi.python.org/pypi/mongodb_beaker
 
 Configuration
 =============
