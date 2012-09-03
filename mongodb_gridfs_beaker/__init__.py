@@ -22,6 +22,8 @@ from beaker.util import SyncDict
 
 from pymongo.uri_parser import parse_uri
 from pymongo.connection import Connection
+from pymongo import ASCENDING, DESCENDING
+
 from gridfs import GridFS
 from gridfs.errors import NoFile
 
@@ -56,6 +58,9 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
             conn = Connection(host_uri)
 
             db = conn[parsed_url['database']]
+            collection = db["%s.files" % parsed_url['collection']]
+            collection.ensure_index([("namespace", ASCENDING), ("filename", ASCENDING)], unique=True)
+            collection.ensure_index([("namespace", ASCENDING)])
 
             if parsed_url['username']:
                 log.info("Attempting to authenticate %s/%s " % 
@@ -145,7 +150,7 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
                  (self.gridfs, key))
         log.debug(self.keys())
 
-        for file_id in self._files_ids():
+        for file_id in self._files_ids(key):
             gridfs.delete(file_id)
 
     def keys(self):
@@ -153,10 +158,10 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
         collection = mongo["%s.files" % self.collection]
         return [f.get("filename", "") for f in collection.find({'namespace': self.namespace})]
 
-    def _files_ids(self):
+    def _files_ids(self, key):
         mongo = self.gridfs[0]
         collection = mongo["%s.files" % self.collection]
-        return [f.get("_id", "") for f in collection.find({'namespace': self.namespace})]
+        return [f.get("_id", "") for f in collection.find({'namespace': self.namespace, 'filename':key})]
 
 class MongoDBGridFSContainer(Container):
     namespace_class = MongoDBGridFSNamespaceManager
