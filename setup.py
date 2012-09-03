@@ -14,7 +14,7 @@ setup(
     name = 'mongodb_gridfs_beaker',
     version = '0.1',
     description = 'Beaker backend to write sessions and caches to a MongoDB GridFS',
-    long_description = '\n' + open('README.md').read(),
+    long_description = '\n' + open('README.rst').read(),
     author='Lukasz Biedrycki',
     author_email = 'lukasz.biedrycki@gmail.com',
     keywords = 'mongo mongodb gridfs beaker cache session',
