@@ -12,7 +12,7 @@ except ImportError:
 
 setup(
     name = 'mongodb_gridfs_beaker',
-    version = '0.2',
+    version = '0.3',
     description = 'Beaker backend to write sessions and caches to a MongoDB GridFS',
     long_description = '\n' + open('README.rst').read(),
     author='Lukasz Biedrycki',
@@ -46,5 +46,6 @@ setup(
         'pymongo>=1.9',
         'beaker>=1.5'
     ],
-    data_files=[("", ['README.rst'])]
+    data_files=[("", ['README.rst'])],
+    package_data={'': ['README.rst']},
 )
