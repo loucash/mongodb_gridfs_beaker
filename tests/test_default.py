@@ -9,6 +9,7 @@ from nose import SkipTest
 from webtest import TestApp
 from pymongo.connection import Connection
 import unittest
+import time
 
 try:
     clsmap['mongodb_gridfs']._init_dependencies()
@@ -148,7 +149,14 @@ def test_clearing_cache():
     cache.clear()
     assert not cache.has_key('test')
 
-
+def test_expiretime():
+    cache = Cache('test', data_dir='./cache', url=uri, type='mongodb_gridfs')
+    cache.set_value('test', 20, expiretime=-10)
+    cache.set_value('foo', 20)
+    assert not cache.has_key('test')
+    assert 'test' not in cache
+    assert cache.has_key('foo')
+    assert 'foo' in cache
 
 def test_has_key_multicache():
     cache = Cache('test', data_dir='./cache', url=uri, type='mongodb_gridfs')

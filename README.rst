@@ -26,9 +26,6 @@ Example of configuration in Pylons project:
     ... beaker.cache.navigation.url = mongodb://localhost:27017/beaker.navigation
     ... beaker.cache.navigation.expire = 86400
 
-Expiration is standard beaker syntax, although not supported at the moment in
-this backend.
-
 Using Beaker Sessions
 =====================
 
