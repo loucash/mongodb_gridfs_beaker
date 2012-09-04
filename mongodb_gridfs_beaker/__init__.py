@@ -119,7 +119,7 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
         try:
             value = pickle.loads(value.encode('utf-8'))
         except Exception, e:
-            log.exception("[MongoDBGridFS] Failed to unpickle value.", e)
+            log.exception("[MongoDBGridFS] Failed to unpickle value.")
             return None
 
         log.debug("[MongoDBGridFS] key: %s; value: %s" % (key, value))
