@@ -66,16 +66,18 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
         conn = Connection(host_uri)
 
         db = conn[self.url_database]
-        collection = db["%s.files" % self.url_collection]
-        collection.ensure_index(
-            [("namespace", ASCENDING), ("filename", ASCENDING)], unique=True)
-        collection.ensure_index([("namespace", ASCENDING)])
 
         if self.url_username:
             log.info("[MongoDBGridFS] Attempting to authenticate %s/%s " % 
                      (self.url_username, self.url_password))
             if not db.authenticate(self.url_username, self.url_password):
                 raise InvalidCacheBackendError('Cannot authenticate to MongoDB.')
+
+        collection = db["%s.files" % self.url_collection]
+        collection.ensure_index(
+            [("namespace", ASCENDING), ("filename", ASCENDING)], unique=True)
+        collection.ensure_index([("namespace", ASCENDING)])
+
         return (db, GridFS(db, self.url_collection))
 
     @property
