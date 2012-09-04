@@ -176,6 +176,11 @@ def test_unicode_keys():
     cache.remove_value(u'hiŏ')
     assert u'hiŏ' not in cache
 
+def test_unicode_values():
+    cache = Cache('test', data_dir='./cache', url=uri, type='mongodb_gridfs')
+    cache.set_value('test', u'hiŏ')
+    assert 'test' in cache
+
 def test_spaces_in_unicode_keys():
     cache = Cache('test', data_dir='./cache', url=uri, type='mongodb_gridfs')
     o = object()
