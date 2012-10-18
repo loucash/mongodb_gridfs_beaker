@@ -63,7 +63,10 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
         host_uri = \
             'mongodb://%s' % (",".join(["%s:%s" % h for h in self.url_nodelist]))
         log.info("[MongoDBGridFS] Host URI: %s" % host_uri)
-        conn = Connection(host_uri)
+        conn = Connection(
+                    host_uri, 
+                    slaveok=self.url_options.get("slaveOk", False),
+                    replicaset=self.url_options.get("replicaSet", None))
 
         db = conn[self.url_database]
 
