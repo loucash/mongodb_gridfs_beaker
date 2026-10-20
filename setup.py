@@ -12,7 +12,7 @@ except ImportError:
 
 setup(
     name = 'mongodb_gridfs_beaker',
-    version = '0.5.4',
+    version = '0.6.0dev1',
     description = 'Beaker backend to write sessions and caches to a MongoDB GridFS',
     long_description = '\n' + open('README.rst').read(),
     author='Lukasz Biedrycki',
@@ -20,7 +20,7 @@ setup(
     keywords = 'mongo mongodb gridfs beaker cache session',
     license = 'New BSD License',
     url = 'https://github.com/loucash/mongodb_gridfs_beaker',
-    tests_require = ['nose', 'webtest'],
+    tests_require = ['nose', 'WebTest'],
     test_suite='nose.collector',
     classifiers = [
         'Development Status :: 4 - Beta',

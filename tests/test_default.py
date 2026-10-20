@@ -7,9 +7,17 @@ from beaker.middleware import CacheMiddleware, SessionMiddleware
 from beaker.exceptions import InvalidCacheBackendError
 from nose import SkipTest
 from webtest import TestApp
-from pymongo.connection import Connection
 import unittest
 import time
+
+# Compatibility between Python 2 <=> Python 3
+IS_PYTHON_3 = (sys.version_info[0] >= 3)
+
+# Compatibility between pymongo<>3.0.0.
+try:
+    from pymongo import MongoClient as Connection
+except ImportError:
+    from pymongo.connection import Connection
 
 try:
     clsmap['mongodb_gridfs']._init_dependencies()
@@ -49,8 +57,8 @@ def simple_session_app(environ, start_response):
         if not environ['PATH_INFO'].startswith('/nosave'):
             session.save()
     start_response('200 OK', [('Content-type', 'text/plain')])
-    return ['The current value is: %d, session id is %s' % (session['value'],
-                                                            session.id)]
+    return [_b('The current value is: %d, session id is %s' % (session['value'],
+                                                               session.id))]
 
 def simple_app(environ, start_response):
     extra_args = {}
@@ -70,7 +78,7 @@ def simple_app(environ, start_response):
         value = 0
     cache.set_value('value', value+1)
     start_response('200 OK', [('Content-type', 'text/plain')])
-    return ['The current value is: %s' % cache.get_value('value')]
+    return [_b('The current value is: %s' % cache.get_value('value'))]
 
 
 def using_none_app(environ, start_response):
@@ -91,7 +99,7 @@ def using_none_app(environ, start_response):
         value = 10
     cache.set_value('value', None)
     start_response('200 OK', [('Content-type', 'text/plain')])
-    return ['The current value is: %s' % value]
+    return [_b('The current value is: %s' % value)]
 
 
 def cache_manager_app(environ, start_response):
@@ -99,16 +107,25 @@ def cache_manager_app(environ, start_response):
     cm.get_cache('test')['test_key'] = 'test value'
 
     start_response('200 OK', [('Content-type', 'text/plain')])
-    yield "test_key is: %s\n" % cm.get_cache('test')['test_key']
+    yield _b("test_key is: %s\n" % cm.get_cache('test')['test_key'])
     cm.get_cache('test').clear()
 
     try:
         test_value = cm.get_cache('test')['test_key']
     except KeyError:
-        yield "test_key cleared"
+        yield _b("test_key cleared")
     else:
-        yield "test_key wasn't cleared, is: %s\n" % \
-            cm.get_cache('test')['test_key']
+        yield _b("test_key wasn't cleared, is: %s\n" % \
+            cm.get_cache('test')['test_key'])
+
+
+def _b(value):
+    # Utility function as WebTest and its machinery want
+    # to yield byte-responses when running on Python3.
+    if IS_PYTHON_3:
+        return bytes(value, 'ascii')
+    else:
+        return value
 
 
 def test_session():
