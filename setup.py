@@ -14,7 +14,8 @@ setup(
     name = 'mongodb_gridfs_beaker',
     version = '0.6.0dev1',
     description = 'Beaker backend to write sessions and caches to a MongoDB GridFS',
-    long_description = '\n' + open('README.rst').read(),
+    long_description = '\n' + open('README.md').read(),
+    long_description_content_type="text/markdown",
     author='Lukasz Biedrycki',
     author_email = 'lukasz.biedrycki@gmail.com',
     keywords = 'mongo mongodb gridfs beaker cache session',
@@ -44,6 +45,6 @@ setup(
         'pymongo>=1.9,<5',
         'beaker>=1.5'
     ],
-    data_files=[("", ['README.rst'])],
-    package_data={'': ['README.rst']},
+    data_files=[("", ['README.md'])],
+    package_data={'': ['README.md']},
 )
