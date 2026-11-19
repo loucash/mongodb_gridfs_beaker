@@ -1,4 +1,6 @@
+.idea
 .eggs
 *.egg-info
 .venv*
 *.pyc
+cache
