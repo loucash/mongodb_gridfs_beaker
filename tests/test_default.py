@@ -150,8 +150,8 @@ def test_has_key():
     cache.set_value("test", o)
     assert cache.has_key("test")
     assert "test" in cache
-    assert not cache.has_key("foo")
-    assert "foo" not in cache
+    assert not cache.has_key("unknown")
+    assert "unknown" not in cache
     cache.remove_value("test")
     assert not cache.has_key("test")
 
@@ -259,7 +259,7 @@ class TestMongoInit(unittest.TestCase):
         cache.set_value("test", o)
         assert cache.has_key("test")
         assert "test" in cache
-        assert not cache.has_key("foo")
-        assert "foo" not in cache
+        assert not cache.has_key("unknown")
+        assert "unknown" not in cache
         cache.remove_value("test")
         assert not cache.has_key("test")
