@@ -20,8 +20,6 @@ setup(
     keywords = 'mongo mongodb gridfs beaker cache session',
     license = 'New BSD License',
     url = 'https://github.com/loucash/mongodb_gridfs_beaker',
-    tests_require = ['nose', 'WebTest'],
-    test_suite='nose.collector',
     classifiers = [
         'Development Status :: 4 - Beta',
         'Environment :: Other Environment',
