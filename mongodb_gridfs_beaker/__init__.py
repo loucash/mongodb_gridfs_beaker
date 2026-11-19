@@ -94,9 +94,9 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
                 raise InvalidCacheBackendError('Cannot authenticate to MongoDB.')
 
         collection = db["%s.files" % self.url_collection]
-        collection.ensure_index(
+        collection.create_index(
             [("namespace", ASCENDING), ("filename", ASCENDING)], unique=True)
-        collection.ensure_index([("namespace", ASCENDING)])
+        collection.create_index([("namespace", ASCENDING)])
 
         return (db, GridFS(db, self.url_collection))
 
@@ -112,7 +112,7 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
 
     def do_remove(self):
         log.debug("[MongoDBGridFS] Remove namespace: %s" % self.namespace)
-        self.collection.remove({'namespace':self.namespace})
+        self.collection.delete_many({'namespace':self.namespace})
 
     def _get_file_for_key(self, key):
         query = {'namespace': self.namespace, 'filename': key}
