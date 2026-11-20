@@ -40,6 +40,29 @@ try:
 except ImportError:
     import pickle
 
+try:
+    from urllib.parse import quote_plus
+except ImportError:
+    from urllib import quote_plus
+
+IS_PYMONGO3 = LooseVersion(pymongo.version) >= LooseVersion('3.0.0')
+
+
+def _pop_slaveok(url):
+    # pymongo 4 rejects a URL that has the legacy `slaveok` option.
+    base, sep, query = url.partition('?')
+    slaveok = False
+    kept = []
+    for part in query.replace(';', '&').split('&'):
+        name, _, value = part.partition('=')
+        if name.lower() == 'slaveok':
+            slaveok = value.lower() in ('true', '1', 'yes')
+        elif part:
+            kept.append(part)
+    if kept:
+        base += '?' + '&'.join(kept)
+    return base, slaveok
+
 class MongoDBGridFSNamespaceManager(NamespaceManager):
 
     clients = SyncDict()
@@ -57,6 +80,7 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
         if not url:
             raise MissingCacheParameter("MongoDB url is required")
 
+        url, self.url_slaveok = _pop_slaveok(url)
         for k, v in parse_uri(url).items():
             setattr(self, "url_%s"%k, v)
 
@@ -68,30 +92,32 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
                         data_key, self._create_mongo_connection)
 
     def _create_mongo_connection(self):
-        host_uri = \
-            'mongodb://%s' % (",".join(["%s:%s" % h for h in self.url_nodelist]))
-        log.info("[MongoDBGridFS] Host URI: %s" % host_uri)
+        hosts = ",".join(["%s:%s" % h for h in self.url_nodelist])
+        log.info("[MongoDBGridFS] Hosts: %s" % hosts)
 
-        is_pymongo3 = LooseVersion(pymongo.version) >= LooseVersion('3.0.0')
+        if self.url_username:
+            log.info("[MongoDBGridFS] Authenticating as %s" % self.url_username)
+            host_uri = 'mongodb://%s:%s@%s/%s' % (
+                quote_plus(self.url_username),
+                quote_plus(self.url_password or ''),
+                hosts, self.url_database)
+        else:
+            host_uri = 'mongodb://%s' % hosts
+
+        options = dict((k.lower(), v) for k, v in self.url_options.items())
 
         params = {}
-        if "slaveok" in self.url_options and self.url_options['slaveok']:
-            if is_pymongo3:
-                params['readPreference'] = ReadPreference.SECONDARY_PREFERRED
+        if self.url_slaveok:
+            if IS_PYMONGO3:
+                params['readPreference'] = 'secondaryPreferred'
             else:
                 params['slaveok'] = True
 
-        if "replicaset" in self.url_options:
-            params['replicaset'] = self.url_options["replicaset"] or ""
+        if "replicaset" in options:
+            params['replicaset'] = options["replicaset"] or ""
 
         conn = Connection(host_uri, **params)
         db = conn[self.url_database]
-
-        if self.url_username:
-            log.info("[MongoDBGridFS] Attempting to authenticate %s/%s " %
-                     (self.url_username, self.url_password))
-            if not db.authenticate(self.url_username, self.url_password):
-                raise InvalidCacheBackendError('Cannot authenticate to MongoDB.')
 
         collection = db["%s.files" % self.url_collection]
         collection.create_index(
@@ -112,7 +138,10 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
 
     def do_remove(self):
         log.debug("[MongoDBGridFS] Remove namespace: %s" % self.namespace)
-        self.collection.delete_many({'namespace':self.namespace})
+        if IS_PYMONGO3:
+            self.collection.delete_many({'namespace':self.namespace})
+        else:
+            self.collection.remove({'namespace':self.namespace})
 
     def _get_file_for_key(self, key):
         query = {'namespace': self.namespace, 'filename': key}
