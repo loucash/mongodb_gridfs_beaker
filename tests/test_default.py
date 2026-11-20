@@ -5,9 +5,9 @@ import sys
 from beaker.cache import clsmap, Cache
 from beaker.middleware import CacheMiddleware, SessionMiddleware
 from beaker.exceptions import InvalidCacheBackendError
-from nose import SkipTest
 from webtest import TestApp
 import unittest
+import pytest
 import time
 
 # Compatibility between Python 2 <=> Python 3
@@ -22,7 +22,7 @@ except ImportError:
 try:
     clsmap['mongodb_gridfs']._init_dependencies()
 except InvalidCacheBackendError:
-    raise SkipTest("an appropriate mmongodb backend is not installed")
+    raise pytest.skip("an appropriate mongodb backend is not installed", allow_module_level=True)
 
 uri = 'mongodb://localhost/test.beaker'
 

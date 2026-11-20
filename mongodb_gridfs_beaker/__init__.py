@@ -22,7 +22,7 @@ from beaker.util import SyncDict, verify_directory
 
 # Compatibility between pymongo<>3.0.0.
 import pymongo
-from distutils.version import LooseVersion
+from verlib2.distutils.version import LooseVersion
 try:
     from pymongo import MongoClient as Connection
     from pymongo.read_preferences import ReadPreference

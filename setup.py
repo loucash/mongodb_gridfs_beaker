@@ -43,7 +43,8 @@ setup(
     requires=['pymongo', 'beaker'],
     install_requires = [
         'pymongo>=1.9,<5',
-        'beaker>=1.5'
+        'beaker>=1.5',
+        'verlib2',
     ],
     data_files=[("", ['README.md'])],
     package_data={'': ['README.md']},
