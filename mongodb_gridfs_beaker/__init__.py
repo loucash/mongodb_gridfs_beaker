@@ -35,15 +35,8 @@ from pymongo import ASCENDING, DESCENDING
 from gridfs import GridFS
 from gridfs.errors import NoFile
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
+import pickle
+from urllib.parse import quote_plus
 
 IS_PYMONGO3 = LooseVersion(pymongo.version) >= LooseVersion('3.0.0')
 
