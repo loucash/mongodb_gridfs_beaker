@@ -27,7 +27,7 @@ try:
     from pymongo import MongoClient as Connection
     from pymongo.read_preferences import ReadPreference
 except ImportError:
-    from pymongo.connection import Connection
+    from pymongo.connection import Connection  # ty: ignore[import-not-found]
 
 from pymongo.uri_parser import parse_uri
 from pymongo import ASCENDING, DESCENDING
