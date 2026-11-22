@@ -60,6 +60,7 @@ jobs:
       - name: Install project
         run: |
           uv pip install --editable='.[develop,test]'
+          uv pip install --requirement requirements-dev.txt
           uv pip install --requirement requirements-test.txt
 
       - name: Set timezone
@@ -70,4 +71,6 @@ jobs:
           timezoneWindows: "European Standard Time"
 
       - name: Run linters and software tests
-        run: pytest -vvv
+        run: |
+          ty check
+          pytest -vvv

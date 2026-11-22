@@ -13,7 +13,7 @@ import pytest
 try:
     from pymongo import MongoClient as Connection
 except ImportError:
-    from pymongo.connection import Connection
+    from pymongo.connection import Connection  # ty: ignore[import-not-found]
 
 try:
     clsmap['mongodb_gridfs']._init_dependencies()
