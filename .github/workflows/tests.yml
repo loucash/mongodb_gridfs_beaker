@@ -72,5 +72,6 @@ jobs:
 
       - name: Run linters and software tests
         run: |
+          ruff check
           ty check
           pytest -vvv
