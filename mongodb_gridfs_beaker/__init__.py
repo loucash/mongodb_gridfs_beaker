@@ -13,6 +13,8 @@ Based upon mongodb_beaker code.
 """
 
 import logging
+from typing import Any, Dict, List
+
 log = logging.getLogger(__name__)
 
 from beaker.container import NamespaceManager, Container
@@ -73,6 +75,14 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
         if not url:
             raise MissingCacheParameter("MongoDB url is required")
 
+        self.url_database: str
+        self.url_nodelist: List
+        self.url_collection: str
+        self.url_username: str
+        self.url_password: str
+        self.url_options: dict
+        self.url_slaveok: str
+
         url, self.url_slaveok = _pop_slaveok(url)
         for k, v in parse_uri(url).items():
             setattr(self, "url_%s"%k, v)
@@ -99,7 +109,7 @@ class MongoDBGridFSNamespaceManager(NamespaceManager):
 
         options = dict((k.lower(), v) for k, v in self.url_options.items())
 
-        params = {}
+        params: Dict[str, Any] = {}
         if self.url_slaveok:
             if IS_PYMONGO3:
                 params['readPreference'] = 'secondaryPreferred'
