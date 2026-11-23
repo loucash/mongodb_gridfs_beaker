@@ -2,13 +2,7 @@
 #
 # Copyright (c) 2012 Lukasz Biedrycki <lukasz.biedrycki@gmail.com>
 #
-
-try:
-    from setuptools import setup, find_packages
-except ImportError:
-    from distribute_setup import use_setuptools
-    use_setuptools()
-    from setuptools import setup, find_packages
+from setuptools import setup, find_packages  # ty: ignore[import-not-found]
 
 setup(
     name = 'mongodb_gridfs_beaker',
